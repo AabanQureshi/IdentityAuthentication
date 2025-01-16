@@ -1,0 +1,13 @@
+﻿<div class="conatiner row h-100">
+    <form asp-action="Email2FA" asp-controller="auth" method="post">
+
+        <div class="mb-3 text-danger" asp-validation-summary="All"></div>
+        <div class="mb-3 w-auto">
+            <label>Enter the code sent to your email</label>
+            <input type="text" class="form-control" name="SecurityCode" required />
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>

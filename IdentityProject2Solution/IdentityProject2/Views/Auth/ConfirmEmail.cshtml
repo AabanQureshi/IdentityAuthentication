@@ -1,0 +1,9 @@
+﻿@model string
+
+<h1>@Model</h1>
+
+
+<h3>Would you like to enable 2factor authentication?</h3>
+
+<a asp-action="Email2fa" asp-controller="auth" >Email 2FA</a>
+<a asp-action="App2fa" asp-controller="auth" >App 2FA</a>
