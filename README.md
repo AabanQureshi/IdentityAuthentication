@@ -23,7 +23,7 @@
 
   <h2>Technologies Used</h2>
     <ul>
-        <li>ASP.NET Core 6/7</li>
+        <li>ASP.NET Core 8/9</li>
         <li>ASP.NET Core Identity</li>
         <li>QRCoder Library for QR Code Generation</li>
         <li>C#</li>
@@ -71,14 +71,8 @@
         </li>
     </ol>
 
-  <h2>Future Enhancements</h2>
-    <ul>
-        <li>Support for push notifications as an additional 2FA method.</li>
-        <li>Enhanced UI for managing 2FA preferences.</li>
-    </ul>
-
   <h2>Contribution</h2>
     <p>
         You can fix the repository, raise issues, or contribute by submitting pull requests. 
-        Suggestions for improvements are welcome!
+        I just wanted to let you know that suggestions for improvements are welcome!
     </p>
