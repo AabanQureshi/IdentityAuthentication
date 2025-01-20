@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zNIaPOB0Pq4=",
+  "dgSpecHash": "5Bo2UVsOlww=",
   "success": true,
-  "projectFilePath": "E:\\Github Projects\\IdentityProject2Solution\\IdentityProject2\\IdentityProject2.csproj",
+  "projectFilePath": "E:\\Github Projects\\IdentityAuthentication\\IdentityProjectSolution\\IdentityProject2\\IdentityProject2.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\aaban\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\aaban\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

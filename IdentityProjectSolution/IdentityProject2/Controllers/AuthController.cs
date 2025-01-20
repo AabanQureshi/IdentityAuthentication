@@ -3,6 +3,7 @@ using IdentityProject2.Servicies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QRCoder;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace IdentityProject2.Controllers
 {
@@ -93,6 +94,228 @@ namespace IdentityProject2.Controllers
             return RedirectToAction("Privacy", "home");
 
         }
+
+
+
+        ///                                                             New
+        /// <summary>
+        /// 
+        /// Those Users whom Two Factor Authentication is enabled are redirected to this Action.
+        /// 
+        /// This is the Send2FACode Action of the Auth Controller,
+        /// </summary>
+        /// <param name="rememberMe"></param>
+        /// <returns>
+        /// OTPVM Model is returned (Press f12 on the model to see its definition)
+        /// </returns>
+
+        public async Task<IActionResult> TFALogin(bool rememberMe = false)
+        {
+            var model = new OTPVM { rememerMe = rememberMe };
+            return View(model);
+        }
+
+        //                                                              New
+
+        /// <summary>
+        /// 
+        /// those users who will select Two Factor Authentication enabled by Email and they want their OTP to be sent on their emails.
+        /// 
+        /// an email will be sent to their email address with the OTP.
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// 
+        /// SigninResult is returned  (Press f12 on the model to see its definition)
+        /// 
+        /// </returns>
+        [HttpPost]
+        public async Task<IActionResult> TFALoginEmail(OTPVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Provide the Code sent to your email");
+                return View("TFALogin", model);
+            }
+
+            var result = await _signInManager.TwoFactorSignInAsync("Email", model.OTP, model.rememerMe, false);
+
+            return HandleSignInResult(result);
+        }
+
+        //                                                              new
+        /// <summary>
+        /// 
+        /// this action is for those users who have enabled Two Factor Authentication by App (Any Authenticator App can be used),
+        /// 
+        /// User has to provide the Code displayed on the App.
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// 
+        /// SigninResult is returned  (Press f12 on the model to see its definition)
+        /// 
+        /// </returns>
+
+
+        [HttpPost]
+        public async Task<IActionResult> TFALoginApp(OTPVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Provide the Code sent to your email");
+                return View("TFALogin", model);
+            }
+            var result = await _signInManager.TwoFactorSignInAsync("Authenticator", model.OTP, model.rememerMe, false);
+            return HandleSignInResult(result);
+        }
+
+
+
+        //                                                              New
+
+
+        /// <summary>
+        /// 
+        /// this is the ForgotPassword Action of the Auth Controller,
+        /// 
+        /// </summary>
+        /// <returns>
+        /// 
+        /// ForgotPasswordVM Model is returned (Press f12 on the model to see its definition)
+        /// 
+        /// </returns>
+        public IActionResult ForgotPassword()
+        {
+            var model = new ForgotPasswordVM();
+            return View(model);
+        }
+
+        //                                                              New                                         
+        /// <summary>
+        /// 
+        /// User will enter their emails and then an email will be sent to their email address with the Password Reset Link.
+        /// 
+        /// the link will have the Token as well.
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// 
+        ///     In case of Success the user is redirected to the ForgotPasswordConfirmation Action.
+        ///     
+        ///     In case of Failure the user is redirected to the same page with an error.
+        /// 
+        /// </returns>
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError("", "Provide the Email Address");
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var values = new ForgotPasswordVM { Email = model.Email, Token = token };
+                var resetLink = Url.Action("ResetPassword", "Auth", values, Request.Scheme);
+                var message = $"<a href=\"{resetLink}\">Click here to reset your password</a>";
+
+                await _sMTPService.SendEmailAsync(model.Email, "Password Reset", message);
+
+            }
+
+            return RedirectToAction("ForgotPasswordConfirmation");
+
+        }
+        //                                                             New
+        /// <summary>
+        /// 
+        /// A confirmation page for the ForgotPassword Action of the Auth Controller,
+        /// 
+        /// the user will be redirected to this page after the email is sent to the user.
+        /// 
+        /// Whether the email is sent or not the user will be redirected to this page to avoid the user to know whether the email was correct or not.
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        //                                                             New
+        /// <summary>
+        /// 
+        /// the user will be redirected to this page from the email sent to the user.
+        /// 
+        /// the user will be able to reset the password here.
+        /// 
+        /// the user will have to provide the new password and the token sent to the user's email.
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// 
+        /// ResetPasswordVM Model is returned (Press f12 on the model to see its definition)
+        /// the model will have email and token passed through this action.
+        /// which is then used to reset the password.
+        /// 
+        /// </returns>
+        public IActionResult ResetPassword(ForgotPasswordVM model)
+        {
+            var vModel = new ResetPasswordVM()
+            {
+                Email = model.Email,
+                Token = model.Token,
+            };
+            return View(vModel);
+        }
+
+        //                                                             New
+        /// <summary>
+        ///     
+        /// The passwords are validated and then the password is reset.
+        /// An email will be sent to their email address with the Password Reset Confirmation.
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>
+        /// 
+        ///     In case of Success the user is redirected to the Index Action (for login).
+        ///     In case of Failure the user is redirected to the same page with an error.
+        /// 
+        /// </returns>
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user != null)
+            {
+                await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                await _sMTPService.SendEmailAsync(model.Email, "Password Reset", "Your Password has been reset successfully");
+            }
+
+            return RedirectToAction("Index");
+
+        }
+
+
+
+
+
 
         /// <summary>
         /// This is the Signup Action of the Auth Controller,
@@ -377,5 +600,40 @@ namespace IdentityProject2.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index");
         }
+
+
+        //                                                                      New
+
+        /// <summary>
+        /// This is the HandleSignInResult Method of the Auth Controller,
+        /// 
+        /// the SigninResult is handled here with predefined responses.
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns>
+        /// 
+        /// Different Return/Redirect Responses are returned based on the SigninResult.
+        /// 
+        /// </returns>
+        private IActionResult HandleSignInResult(SignInResult result)
+        {
+            if (result == SignInResult.Success)
+                return RedirectToAction("Privacy", "Home");
+            if (result == SignInResult.LockedOut)
+                return View("LockedOut");
+            if (result == SignInResult.TwoFactorRequired)
+                return RedirectToAction("Send2FACode", "Account");
+            if (result == SignInResult.Failed)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View("Login");
+            }
+
+            return View("Error");
+        }
+
+
+
     }
 }

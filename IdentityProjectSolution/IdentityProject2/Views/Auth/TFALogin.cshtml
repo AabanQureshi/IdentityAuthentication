@@ -1,0 +1,50 @@
+﻿@model OTPVM
+<h1>Two Factor Authentication is required</h1>
+
+<button id="EmailFA" disabled="disabled" class="btn btn-primary w-auto">Send Code On Email</button> OR <button id="AppFA" class="btn btn-primary w-auto">Code from Authenticator</button>
+
+
+
+
+
+<div id="EmailFAForm" class="d-none container">
+    <form asp-action="TFALoginEmail" asp-controller="auth" method="post">
+        <div class="mb-3 text-danger" asp-validation-summary="All"></div>
+
+        <div class="mb-3 form-group">
+            <label asp-for="OTP"></label>
+            <input asp-for="OTP" class="form-control" />
+            <span asp-validation-for="OTP" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<div id="AppFAForm" class="d-none container">
+    <form asp-action="TFALoginApp" asp-controller="auth" method="post">
+        <div class="mb-3 text-danger" asp-validation-summary="All"></div>
+        <div class="mb-3 form-group">
+            <label asp-for="OTP"></label>
+            <input asp-for="OTP" class="form-control" />
+            <span asp-validation-for="OTP" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#EmailFA").click(function () {
+                $("#EmailFAForm").removeClass("d-none");
+                $("#AppFAForm").addClass("d-none");
+            });
+            $("#AppFA").click(function () {
+                $("#AppFAForm").removeClass("d-none");
+                $("#EmailFAForm").addClass("d-none");
+            });
+        });
+    </script>
+}

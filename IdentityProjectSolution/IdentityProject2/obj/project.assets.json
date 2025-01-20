@@ -5256,11 +5256,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Github Projects\\IdentityProject2Solution\\IdentityProject2\\IdentityProject2.csproj",
+      "projectUniqueName": "E:\\Github Projects\\IdentityAuthentication\\IdentityProjectSolution\\IdentityProject2\\IdentityProject2.csproj",
       "projectName": "IdentityProject2",
-      "projectPath": "E:\\Github Projects\\IdentityProject2Solution\\IdentityProject2\\IdentityProject2.csproj",
+      "projectPath": "E:\\Github Projects\\IdentityAuthentication\\IdentityProjectSolution\\IdentityProject2\\IdentityProject2.csproj",
       "packagesPath": "C:\\Users\\aaban\\.nuget\\packages\\",
-      "outputPath": "E:\\Github Projects\\IdentityProject2Solution\\IdentityProject2\\obj\\",
+      "outputPath": "E:\\Github Projects\\IdentityAuthentication\\IdentityProjectSolution\\IdentityProject2\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
